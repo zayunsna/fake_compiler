@@ -20,11 +20,13 @@ A holiday with nothing to do made me do it.
 - 0.1% chance of an error occurring, followed by a Make error message.
 - If completed without errors, output the compile result and completion message.
 
-[On Success]
-![[./images/on_success.png]]
+### [On Success]
+<img src="./images/on_success.png]">
 
-[On Failure]
-![[./images/on_failure.png]]
+
+### [On Failure]
+<img src="./images/on_failure]">
+
 
 The code is implemented in Python, but what gets printed is a C++ compilation, which is the funny part.
 I tried to make it look as plausible as possible by adding everything I could remember.
