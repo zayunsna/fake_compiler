@@ -21,11 +21,11 @@ A holiday with nothing to do made me do it.
 - If completed without errors, output the compile result and completion message.
 
 ### [On Success]
-<img src="./images/on_success.png]">
+<img src="./images/on_success.png">
 
 
 ### [On Failure]
-<img src="./images/on_failure]">
+<img src="./images/on_failure">
 
 
 The code is implemented in Python, but what gets printed is a C++ compilation, which is the funny part.
