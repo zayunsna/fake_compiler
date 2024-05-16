@@ -25,7 +25,7 @@ A holiday with nothing to do made me do it.
 
 
 ### [On Failure]
-<img src="./images/on_failure">
+<img src="./images/on_failure.png">
 
 
 The code is implemented in Python, but what gets printed is a C++ compilation, which is the funny part.
