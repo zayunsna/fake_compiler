@@ -38,6 +38,9 @@ Realistic을 증가시키기 위한 다른 아이디어가 있다면, 언제든 
 
 (그럴듯한 단어들을 모아놓은 words.txt는 위대한 GPT4의 도움을 받아 수집했다.)
 
+-------
+-------
+
 > A drowsy weekday afternoon at 3 PM, you might need this. Prepare your terminal and this code. With a single execution, you can take a mental break during work without your boss noticing!
 
 A very lazy holiday with nothing to do.
