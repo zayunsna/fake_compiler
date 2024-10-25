@@ -66,6 +66,8 @@ def simulate_compilation(file_list, words):
 if __name__ == "__main__":
     words_file_path = 'words.txt'
     words = load_words(words_file_path)
-    # num_files = int(input("Enter the number of files to simulate compilation: "))
+    #### User Input ####
+    # num_files : Int type Parameter
+    #           : This param will control the total time of this fake compiling.
     file_list = generate_file_list(words, num_files=119)
     simulate_compilation(file_list, words)
