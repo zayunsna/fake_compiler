@@ -36,7 +36,59 @@ Realistic을 증가시키기 위한 다른 아이디어가 있다면, 언제든 
 
 코드는 아래 github repo에서 clone 후 `python3`으로 실행하면 끝!
 
-(그럴듯한 단어들을 모아놓은 words.txt는 위대한 GPT4의 도움을 받아 수집했다.)
+(그럴듯한 단어들을 모아놓은 words.txt는 위대한 GPT의 도움을 받아 수집했다.)
+
+# 🛠️ 사용법
+
+이 프로젝트는 **주요 Python 스크립트 3개**로 구성되어 있음:
+1. **`fake_compiler.py`**: 원조 가짜 컴파일러 스크립트
+2. **`fake_compiler_v2.py`**: 좀 더 현실적인 출력과 커맨드 옵션이 추가된 가짜 컴파일러 버전
+3. **`fake_ml_trainer.py`**: 머신러닝 모델 학습 과정을 시뮬레이션하는 스크립트
+
+## `fake_compiler.py`
+
+ 가장 기본적인 스크립트
+**실행 방법**
+`python3 fake_compiler.py`
+스크립트 내부에서 `num_files`와 `error_probability` 값을 수정하면  
+출력 줄 수(=가짜 컴파일 파일 수)와 **에러 발생 확률**을 조절할 수 있음.
+
+### `fake_compiler_v2.py`
+
+CLI 옵션으로 더 세밀한 커스터마이징 가능
+**실행 방법**
+`python3 fake_compiler_v2.py [옵션들]`
+
+**사용 가능한 옵션**
+
+| 옵션            | 설명                                      | 기본값   |
+| ------------- | --------------------------------------- | ----- |
+| `--theme`     | 컴파일러 테마 (`g++`, `clang`, `cl.exe` 중 선택) | `g++` |
+| `--num_files` | "컴파일"할 파일 수                             | `150` |
+
+**예시**
+`python3 fake_compiler_v2.py --theme clang --num_files 200`
+
+---
+
+### `fake_ml_trainer.py`
+머신러닝 학습 과정을 흉내내는 시뮬레이터
+
+**실행 방법**
+`python3 fake_ml_trainer.py [옵션들]`
+
+**사용 가능한 옵션**
+
+|옵션|설명|기본값|
+|---|---|---|
+|`--epochs`|학습 epoch 수|`25`|
+|`--batch_size`|배치 크기|`64`|
+|`--lr`|학습률 (Learning Rate)|`0.001`|
+|`--dataset_size`|데이터셋 크기|`10000`|
+
+**예시**
+`python3 fake_ml_trainer.py --epochs 50 --lr 0.01`
+
 
 -------
 -------
@@ -88,3 +140,65 @@ Any other ideas to increase realism are welcome!
 You can clone the code from the GitHub repo below and run it with python3!
 
 (The plausible words were collected with the help of the great GPT-4.)
+
+## 🛠️ Usage
+
+This project contains three main Python scripts:
+
+1.  **`fake_compiler.py`**: The original fake compiler script.
+2.  **`fake_compiler_v2.py`**: An enhanced version of the fake compiler with more realistic output and command-line options.
+3.  **`fake_ml_trainer.py`**: A script that simulates a machine learning model training process.
+
+### `fake_compiler.py`
+
+This is the basic script. To run it, simply execute the following command:
+
+```bash
+python3 fake_compiler.py
+```
+
+You can modify the `num_files` and `error_probability` variables directly in the script to control the length of the simulation and the likelihood of encountering a fake error.
+
+### `fake_compiler_v2.py`
+
+This version offers more customization through command-line arguments:
+
+```bash
+python3 fake_compiler_v2.py [options]
+```
+
+**Options:**
+
+*   `--theme`: Choose the compiler theme. Options are `g++` (default), `clang`, or `cl.exe`.
+*   `--num_files`: Set the number of files to "compile" (default: 150).
+
+**Example:**
+
+To simulate a compilation with the `clang` theme and 200 files, run:
+
+```bash
+python3 fake_compiler_v2.py --theme clang --num_files 200
+```
+
+### `fake_ml_trainer.py`
+
+This script simulates the training of a machine learning model. You can customize the training parameters using command-line arguments:
+
+```bash
+python3 fake_ml_trainer.py [options]
+```
+
+**Options:**
+
+*   `--epochs`: Number of training epochs (default: 25).
+*   `--batch_size`: Batch size for training (default: 64).
+*   `--lr`: Learning rate (default: 0.001).
+*   `--dataset_size`: Total size of the fake dataset (default: 10000).
+
+**Example:**
+
+To simulate training for 50 epochs with a learning rate of 0.01, run:
+
+```bash
+python3 fake_ml_trainer.py --epochs 50 --lr 0.01
+```

@@ -6,19 +6,17 @@ import argparse
 
 def load_words(file_path):
     with open(file_path, 'r') as file:
-        # Filter out short words and comments
         words = [w.strip() for w in file.read().splitlines() if len(w.strip()) > 2 and not w.startswith('#')]
     return words
 
 def generate_realistic_identifier(words):
-    """Combines words into realistic programming identifiers."""
     patterns = [
-        lambda w1, w2: f"{w1.capitalize()}{w2.capitalize()}",  # PascalCase
-        lambda w1, w2: f"{w1.lower()}{w2.capitalize()}",      # camelCase
-        lambda w1, w2: f"{w1.lower()}_{w2.lower()}",          # snake_case
-        lambda w1, w2: f"{w1.capitalize()}::{w2.lower()}",     # Class::method
-        lambda w1, w2: f"g_{w1.lower()}_{w2.lower()}",       # global_variable
-        lambda w1, w2: f"m_{w1.capitalize()}{w2.capitalize()}", # memberVariable
+        lambda w1, w2: f"{w1.capitalize()}{w2.capitalize()}",  
+        lambda w1, w2: f"{w1.lower()}{w2.capitalize()}",      
+        lambda w1, w2: f"{w1.lower()}_{w2.lower()}",          
+        lambda w1, w2: f"{w1.capitalize()}::{w2.lower()}",    
+        lambda w1, w2: f"g_{w1.lower()}_{w2.lower()}",       
+        lambda w1, w2: f"m_{w1.capitalize()}{w2.capitalize()}",
         lambda w1, w2, w3: f"{w1.capitalize()}{w2.capitalize()}{w3.capitalize()}",
         lambda w1, w2, w3: f"{w1.lower()}_{w2.lower()}_{w3.lower()}",
     ]
@@ -38,13 +36,11 @@ def generate_dependency_paths(words, num_deps=3):
     base_dirs = ["include", "src", "lib", "third_party", "modules", "core"]
     paths = []
     for _ in range(num_deps):
-        # Generate more realistic, nested paths
         path_depth = random.randint(1, 4)
         path_parts = [random.choice(base_dirs)]
         for _ in range(path_depth):
-            path_parts.append(generate_realistic_identifier(words).split('::')[0]) # Use the class/namespace part
-        
-        # Ensure the final part is a header file
+            path_parts.append(generate_realistic_identifier(words).split('::')[0]) 
+
         path_parts.append(f"{generate_realistic_identifier(words).split('::')[0]}.h")
         path = '/'.join(path_parts)
         paths.append(path)

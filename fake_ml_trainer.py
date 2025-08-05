@@ -5,10 +5,7 @@ import random
 import argparse
 import math
 
-# --- Sparkline Generation Logic ---
-
 def generate_sparkline(series):
-    """Generates a single-line sparkline chart from a series of data."""
     spark_chars = [' ', '▂', '▃', '▄', '▅', '▆', '▇', '█']
     min_val, max_val = min(series), max(series)
     data_range = max_val - min_val
@@ -22,10 +19,7 @@ def generate_sparkline(series):
 
     return ''.join(get_char(v) for v in series)
 
-# --- End of Sparkline Logic ---
-
 def display_summary(history):
-    """Displays the final training summary with sparklines."""
     print("\n" + "="*60)
     print("                 TRAINING RUN SUMMARY")
     print("="*60 + "\n")
@@ -41,7 +35,6 @@ def display_summary(history):
     print("\n" + "="*60 + "\n")
 
 def simulate_training(epochs, batch_size, learning_rate, dataset_size):
-    """Simulates a machine learning model training process with realistic fluctuations."""
 
     print("\n" + "="*60)
     print("            FAKE MACHINE LEARNING MODEL TRAINER")
@@ -60,9 +53,8 @@ def simulate_training(epochs, batch_size, learning_rate, dataset_size):
     
     history = {'loss': [], 'accuracy': [], 'val_loss': [], 'val_accuracy': []}
 
-    # Fluctuation parameters
-    fluctuation_amplitude = (initial_loss - 0.1) / 5 # Fluctuate up to 20% of the initial loss range
-    fluctuation_frequency = 2 * math.pi / (dataset_size // batch_size) # One full cycle per epoch
+    fluctuation_amplitude = (initial_loss - 0.1) / 5 
+    fluctuation_frequency = 2 * math.pi / (dataset_size // batch_size) 
 
     total_steps = epochs * (dataset_size // batch_size)
 
@@ -76,17 +68,14 @@ def simulate_training(epochs, batch_size, learning_rate, dataset_size):
             
             current_step = (epoch - 1) * steps + i
 
-            # Base trend
             base_loss_decay = (initial_loss / total_steps) * 1.5
             base_acc_increase = ((1 - initial_accuracy) / total_steps) * 1.2
 
-            # Sinusoidal fluctuation
             fluctuation = math.sin(current_step * fluctuation_frequency * random.uniform(0.8, 1.2)) * fluctuation_amplitude
             fluctuation_2 = math.sin(current_step * fluctuation_frequency * random.uniform(0.7, 1.1)) * fluctuation_amplitude
 
-            # Apply changes
             loss -= (base_loss_decay - fluctuation) * random.uniform(0.1, 0.3)
-            accuracy += (base_acc_increase + fluctuation_2/2) * random.uniform(0.1, 0.3) # Accuracy fluctuates less
+            accuracy += (base_acc_increase + fluctuation_2/2) * random.uniform(0.1, 0.3) 
 
             loss, accuracy = max(0.01, loss), min(0.99, accuracy)
 
