@@ -27,7 +27,7 @@ def generate_dependency_paths(words, num_deps=3):
 
 def simulate_compilation(file_list, words):
     total_files = len(file_list)
-    error_probability = 0.01
+    error_probability = 0.0
     
     for i, file in enumerate(file_list, start=1):
         dependencies = ' '.join(generate_dependency_paths(words, random.randint(1, 4)))
@@ -69,5 +69,5 @@ if __name__ == "__main__":
     #### User Input ####
     # num_files : Int type Parameter
     #           : This param will control the total time of this fake compiling.
-    file_list = generate_file_list(words, num_files=119)
+    file_list = generate_file_list(words, num_files=1190)
     simulate_compilation(file_list, words)
