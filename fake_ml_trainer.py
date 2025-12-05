@@ -1,5 +1,3 @@
-
-
 import time
 import random
 import argparse
@@ -34,7 +32,7 @@ def display_summary(history):
     
     print("\n" + "="*60 + "\n")
 
-def simulate_training(epochs, batch_size, learning_rate, dataset_size):
+def simulate_training(epochs, batch_size, learning_rate, dataset_size, chaos_factor):
 
     print("\n" + "="*60)
     print("            FAKE MACHINE LEARNING MODEL TRAINER")
@@ -44,22 +42,29 @@ def simulate_training(epochs, batch_size, learning_rate, dataset_size):
     print(f"  - Batch Size:      {batch_size}")
     print(f"  - Learning Rate:   {learning_rate}")
     print(f"  - Dataset Size:    {dataset_size}")
+    print(f"  - Chaos Factor:    {chaos_factor}")
     print(f"  - Steps per Epoch: {dataset_size // batch_size}\n")
     time.sleep(2)
 
-    initial_loss = random.uniform(1.5, 2.5)
-    initial_accuracy = random.uniform(0.3, 0.5)
+    # You can change these starting values for testing
+    initial_loss = 1.5
+    initial_accuracy = 0.6
     loss, accuracy = initial_loss, initial_accuracy
     
     history = {'loss': [], 'accuracy': [], 'val_loss': [], 'val_accuracy': []}
 
-    fluctuation_amplitude = (initial_loss - 0.1) / 5 
-    fluctuation_frequency = 2 * math.pi / (dataset_size // batch_size) 
-
     total_steps = epochs * (dataset_size // batch_size)
+
+    # BUG FIX: Fluctuation amplitude must be smaller than the base decay/increase rates
+    fluctuation_amplitude = (initial_loss / total_steps) * ( 0.5 + chaos_factor)
+    fluctuation_frequency = 2 * math.pi / (dataset_size // batch_size) 
 
     for epoch in range(1, epochs + 1):
         print(f"Epoch {epoch}/{epochs}")
+        
+        # As training progresses, randomness decays for stabilization
+        decay_factor = (1.0 - (epoch / epochs))**1.5
+
         epoch_loss, epoch_accuracy = 0, 0
         steps = dataset_size // batch_size
 
@@ -74,9 +79,24 @@ def simulate_training(epochs, batch_size, learning_rate, dataset_size):
             fluctuation = math.sin(current_step * fluctuation_frequency * random.uniform(0.8, 1.2)) * fluctuation_amplitude
             fluctuation_2 = math.sin(current_step * fluctuation_frequency * random.uniform(0.7, 1.1)) * fluctuation_amplitude
 
-            loss -= (base_loss_decay - fluctuation) * random.uniform(0.1, 0.3)
-            accuracy += (base_acc_increase + fluctuation_2/2) * random.uniform(0.1, 0.3) 
+            # --- MODIFIED: Plateau Logic ---
+            # If accuracy is high, enter plateau phase, otherwise continue normal training.
+            if accuracy > 0.95:
+                # Plateau phase: very small, symmetric fluctuations
+                loss += random.uniform(-0.005, 0.005)
+                accuracy += random.uniform(-0.005, 0.005)
+            else:
+                # Normal training phase (with chaos and decay)
+                if random.random() < (chaos_factor * decay_factor):
+                    # Unrealistic reversal
+                    loss += (base_loss_decay - fluctuation) * random.uniform(0.1, 0.5)
+                    accuracy -= (base_acc_increase + fluctuation_2/2) * random.uniform(0.1, 0.3)
+                else:
+                    # Realistic progression
+                    loss -= (base_loss_decay - fluctuation) * random.uniform(0.1, 0.7)
+                    accuracy += (base_acc_increase + fluctuation_2/2) * random.uniform(0.1, 0.3)
 
+            # Clamp values to their allowed range
             loss, accuracy = max(0.01, loss), min(0.99, accuracy)
 
             epoch_loss += loss
@@ -88,7 +108,17 @@ def simulate_training(epochs, batch_size, learning_rate, dataset_size):
 
         avg_loss = epoch_loss / steps
         avg_accuracy = epoch_accuracy / steps
-        val_loss = avg_loss * random.uniform(0.95, 1.1)
+
+        # --- MODIFIED: Epoch-level Fluctuation ---
+        # The magnitude of fluctuation also decays as training progresses for stabilization.
+        base_fluctuation = random.uniform(-0.15, 0.15) # Centered around 0
+        epoch_performance_factor = 1.0 + (base_fluctuation * decay_factor)
+        avg_loss *= epoch_performance_factor
+        # Ensure accuracy fluctuation is inversely proportional but also has some randomness
+        avg_accuracy /= (epoch_performance_factor * random.uniform(0.98, 1.02))
+        # --- End Modified ---
+
+        val_loss = avg_loss * random.uniform(0.95, 1.1) # Keep some validation noise
         val_accuracy = avg_accuracy * random.uniform(0.95, 1.05)
 
         history['loss'].append(avg_loss)
@@ -105,12 +135,14 @@ def simulate_training(epochs, batch_size, learning_rate, dataset_size):
 
     display_summary(history)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Simulate a machine learning model training process.')
     parser.add_argument('--epochs', type=int, default=25, help='Number of epochs to simulate.')
     parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training.')
     parser.add_argument('--lr', type=float, default=0.001, help='Learning rate.')
     parser.add_argument('--dataset_size', type=int, default=10000, help='Total size of the fake dataset.')
+    parser.add_argument('--chaos', type=float, default=0.1, help='Chance of random temporary reversal in training progress.')
     
     args = parser.parse_args()
 
@@ -118,5 +150,6 @@ if __name__ == "__main__":
         epochs=args.epochs,
         batch_size=args.batch_size,
         learning_rate=args.lr,
-        dataset_size=args.dataset_size
+        dataset_size=args.dataset_size,
+        chaos_factor=args.chaos
     )

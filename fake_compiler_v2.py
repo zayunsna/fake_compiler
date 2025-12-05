@@ -3,6 +3,7 @@
 import random
 import time
 import argparse
+import os
 
 def load_words(file_path):
     with open(file_path, 'r') as file:
@@ -49,6 +50,8 @@ def generate_dependency_paths(words, num_deps=3):
 def generate_error_message(file, theme, words):
     line_number = random.randint(10, 200)
     identifier = generate_realistic_identifier(words)
+    class_name = generate_realistic_identifier(words).split(':')[0]
+    function_name = generate_realistic_identifier(words).lower().split(':')[0]
 
     if theme == 'cl.exe':
         errors = [
@@ -62,13 +65,16 @@ def generate_error_message(file, theme, words):
             f"{file}:{line_number}: undefined reference to `__{identifier}'",
             f"{file}: In function `main':\n{file}:{line_number}: error: '{identifier}' was not declared in this scope",
             f"{file}:{line_number}: fatal error: {generate_realistic_identifier(words)}.h: No such file or directory\ncompilation terminated.",
-            f"/usr/bin/ld: {generate_realistic_identifier(words)}.o: in function `{generate_realistic_identifier(words)}':\n(.text+0x1e): undefined reference to `{identifier}'"
+            f"/usr/bin/ld: {generate_realistic_identifier(words)}.o: in function `{generate_realistic_identifier(words)}':\n(.text+0x1e): undefined reference to `{identifier}'",
+            f"{file}:{line_number}: error: redefinition of 'class {class_name}'\n{file}:{random.randint(10, line_number-1)}: note: previous definition of 'class {class_name}' was here",
+            f"{file}:{line_number}: error: could not convert '{function_name}()' from '{class_name}' to 'bool'\n"
+            f"  {random.randint(1,5)} |   if (!{function_name}()) {{\n"
+            f"    |       {'^' * (len(function_name) + 2)}"
         ]
     return random.choice(errors)
 
-def simulate_compilation(file_list, words, theme='g++'):
+def simulate_compilation(file_list, words, theme='g++', error_probability=0.0005):
     total_files = len(file_list)
-    error_probability = 0.2
 
     themes = {
         'g++': {'command': 'g++', 'options': '-c {file} -o {obj_file} -I. {dependencies}', 'color': '\033[92m'},
@@ -112,9 +118,23 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Simulate a realistic-looking compilation process.')
     parser.add_argument('--theme', type=str, default='g++', choices=['g++', 'clang', 'cl.exe'], help='Compiler theme to use.')
     parser.add_argument('--num_files', type=int, default=150, help='Number of files to simulate compiling.')
+    parser.add_argument('--error_rate', type=float, default=0.0005, help='Probability of a compilation error.')
+    parser.add_argument('--live_dir', type=str, default=None, help='Path to a directory to "compile" for a live-directory mode.')
     args = parser.parse_args()
 
     words_file_path = 'words.txt'
     words = load_words(words_file_path)
-    file_list = generate_file_list(words, num_files=args.num_files)
-    simulate_compilation(file_list, words, theme=args.theme)
+
+    if args.live_dir:
+        if os.path.isdir(args.live_dir):
+            file_list = []
+            for root, _, files in os.walk(args.live_dir):
+                for file in files:
+                    file_list.append(os.path.join(root, file))
+        else:
+            print(f"Error: Directory not found at '{args.live_dir}'")
+            exit(1)
+    else:
+        file_list = generate_file_list(words, num_files=args.num_files)
+        
+    simulate_compilation(file_list, words, theme=args.theme, error_probability=args.error_rate)
